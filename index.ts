@@ -90,6 +90,28 @@ app.get("/products", async (req, res) => {
     data: result,
   });
 });
+app.get("/products/:id", async (req, res) => {
+  const result = await Product.findById(req.params.id);
+  res.json({
+    success: true,
+    message: "Product is retrieved successfully!",
+    data: result,
+  });
+});
+
+app.put("/products/:id", async (req, res) => {
+  const id = req.params.id;
+  const productData = req.body;
+
+  const result = await Product.findByIdAndUpdate(id, productData, {
+    new: true,
+  });
+  res.json({
+    success: true,
+    message: "Product updated successfully!",
+    data: result,
+  });
+});
 
 app.use((err, req, res, next) => {
   res.status(500).json({
