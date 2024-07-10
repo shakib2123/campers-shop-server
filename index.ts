@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import mongoose from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import cors from "cors";
 const app = express();
 const port = process.env.PORT || 5000;
@@ -32,12 +32,62 @@ async function main() {
 }
 main();
 
-app.post("/products", (req, res) => {
-  const product = req.body;
+// Schemas
+const ProductSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  stock: {
+    type: Boolean,
+    default: true,
+  },
+  ratings: {
+    type: Number,
+    default: 0,
+  },
 });
-app.get("/products", (req, res) => {
+
+// Models
+const Product = model("Product", ProductSchema);
+
+app.post("/products", async (req, res) => {
+  const product = req.body;
+  const result = await Product.create(product);
+
+  res.send({
+    success: true,
+    message: "Product created successfully!",
+    data: result,
+  });
+});
+
+app.get("/products", async (req, res) => {
+  const result = await Product.find();
   res.json({
-    message: "Welcome",
+    success: true,
+    message: "Products retrieved successfully!",
+    data: result,
   });
 });
 
