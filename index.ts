@@ -113,6 +113,16 @@ app.put("/products/:id", async (req, res) => {
   });
 });
 
+app.delete("/products/:id", async (req, res) => {
+  const id = req.params.id;
+  const result = await Product.findByIdAndDelete(id);
+  res.json({
+    success: true,
+    message: "Product deleted successfully!",
+    data: result,
+  });
+});
+
 app.use((err, req, res, next) => {
   res.status(500).json({
     success: false,
