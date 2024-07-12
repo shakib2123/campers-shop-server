@@ -107,15 +107,48 @@ app.post("/products", async (req, res) => {
 });
 
 app.get("/products", async (req, res) => {
-  const result = await Product.find();
-  res.json({
-    success: true,
-    message: "Products retrieved successfully!",
-    data: result,
-  });
+  const { searchValue, category, minPrice, maxPrice, sort } = req.query;
+  const filter: any = {};
+
+  if (searchValue) {
+    filter.$or = [
+      { name: { $regex: searchValue, $options: "i" } },
+      { description: { $regex: searchValue, $options: "i" } },
+    ];
+  }
+
+  if (category) {
+    filter.category = category;
+  }
+
+  if (minPrice && maxPrice) {
+    filter.price = { $gte: minPrice, $lte: maxPrice };
+  } else if (minPrice) {
+    filter.price = { $gte: minPrice };
+  } else if (maxPrice) {
+    filter.price = { $lte: maxPrice };
+  }
+
+  let sortOption: any = {};
+
+  if (sort === "asc") {
+    sortOption.price = 1;
+  } else if (sort === "desc") {
+    sortOption.price = -1;
+  }
+
+  try {
+    const result = await Product.find(filter).sort(sortOption);
+    res.status(200).json({
+      success: true,
+      message: "Products retrieved successfully!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message, data: [] });
+  }
 });
 app.get("/products/:id", async (req, res) => {
-  console.log("Product Id", req.params.id);
   const result = await Product.findById(req.params.id);
   res.json({
     success: true,
