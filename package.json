@@ -1,11 +1,11 @@
 {
   "name": "campers-shop-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
-    "start:prod": "nodemon index.js",
-    "start:dev": "ts-node-dev --respawn --transpile-only ./index.ts",
+    "start": "node server.js",
+    "start:prod": "nodemon server.js",
+    "start:dev": "ts-node-dev --respawn --transpile-only ./server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
     "mongoose": "^8.5.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "ts-node-dev": "^2.0.0"
   }
