@@ -96,14 +96,22 @@ const Product = model("Product", ProductSchema);
 const Order = model("Order", OrderSchema);
 
 app.post("/products", async (req, res) => {
-  const product = req.body;
-  const result = await Product.create(product);
+  try {
+    const product = req.body;
+    const result = await Product.create(product);
 
-  res.send({
-    success: true,
-    message: "Product created successfully!",
-    data: result,
-  });
+    res.send({
+      success: true,
+      message: "Product created successfully!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while creating product.",
+      data: {},
+    });
+  }
 });
 
 app.get("/products", async (req, res) => {
@@ -145,16 +153,28 @@ app.get("/products", async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message, data: [] });
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while finding product.",
+      data: [],
+    });
   }
 });
 app.get("/products/:id", async (req, res) => {
-  const result = await Product.findById(req.params.id);
-  res.json({
-    success: true,
-    message: "Product is retrieved successfully!",
-    data: result,
-  });
+  try {
+    const result = await Product.findById(req.params.id);
+    res.json({
+      success: true,
+      message: "Product is retrieved successfully!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while finding product.",
+      data: {},
+    });
+  }
 });
 
 app.put("/products/:id", async (req, res) => {
@@ -176,28 +196,45 @@ app.put("/products/:id", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "An error occurred while updating the product.",
+      data: {},
     });
   }
 });
 
 app.delete("/products/:id", async (req, res) => {
-  const id = req.params.id;
-  const result = await Product.findByIdAndDelete(id);
-  res.json({
-    success: true,
-    message: "Product deleted successfully!",
-    data: result,
-  });
+  try {
+    const id = req.params.id;
+    const result = await Product.findByIdAndDelete(id);
+    res.json({
+      success: true,
+      message: "Product deleted successfully!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while deleting product.",
+      data: {},
+    });
+  }
 });
 
 app.post("/orders", async (req, res) => {
-  const paymentData = req.body;
-  const result = await Order.create(paymentData);
-  res.json({
-    success: true,
-    message: "Order successful!",
-    data: result,
-  });
+  try {
+    const paymentData = req.body;
+    const result = await Order.create(paymentData);
+    res.json({
+      success: true,
+      message: "Order successful!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while ordering product",
+      data: {},
+    });
+  }
 });
 
 app.put("/products", async (req, res) => {
@@ -233,6 +270,7 @@ app.put("/products", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "An error occurred while updating product quantities.",
+      data: [],
     });
   }
 });
